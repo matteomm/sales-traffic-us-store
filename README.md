@@ -54,7 +54,7 @@ Data Cleaning and EDA was performed simultaneously on both datasets in the data_
 
 Throughout the modelling, the main evaluation metric will be **Mean Squared Error** (MSE) which measures the average of the error squares between the predictions made by the model and the actual observations. 
 
-Our best model for traffic (TBATS) had a final MSE of 43.95 while our the best iteration of LSTM returned a final 32.13 MSE.
+Our best model for traffic (TBATS) had a final MSE of 43.95 while our the best iteration of LSTM returned a final 21.116 MSE.
 Both figures refer to our test set results.
 
 
@@ -115,11 +115,10 @@ m is the seasonality parameter which the model takes into account.
 
 After splitting into training and test sets, in the first section I analysed Autocorrelation and Partial Autocorrelation plot and it seemed like there was a strong relationship with values lagged 24 hours and weekly.
 
-I would have liked to play around with the the p and d parameters but the memory of my laptop constrained me to use values in between 0 and 1 for both. I had to run a dummy model with p=1 d=1 and q=1  with daily seasonality m=24 which returned an initial 127 for MSE. It picked daily patterns perfectly as expected but any variations of traffic during the week was completely ignored.
+I would have liked to play around with the the p and d parameters but the memory of my laptop constrained me to use values in between 0 and 1 for both. I had to run a dummy model with p=1 d=1 and q=1  with daily seasonality m=24 which returned an initial 127 for MSE. It picked up daily patterns perfectly as expected but any variations of traffic during the week was completely ignored.
 
 
-In the second iteration I basically replicated the same SARIMA model but changing the model seasoanlity to weekly m=53. I tried to reduce the number of datapoints just by looking at the last 6 months but still computation for anything above p and q more than 2 would take too long. MSE actually got worse in thsi case and the model stopped picking up any valuable pattern.
-
+In the second iteration I basically replicated the same SARIMA model but changing the model seasoanlity to weekly m=53. I tried to reduce the number of datapoints just by looking at the last 6 months but still computation for anything above p and q more than 2 would take too long. MSE actually got worse in thsi case and the model stopped picking up any meaningful pattern.
 
 Unfortunately, any iteration of SARIMA would be unable to deal with multiple seasonalities at once and I had to resort to a different statistical package which is specifically designed to take multiple seasonalities into the modelling at once (TBATS). 
 
@@ -162,7 +161,7 @@ The initial baseline already returns a value of 24 MSE on the validation set, pl
 
 3) Changing Activation Function to 'relu' MSE 21.597 on Validation
 
-4) Increasing number of epochs from 10 to 20.464 on Validation 
+4) Increasing number of epochs from 10 to 20 20.464 on Validation 
 
 5) Changing batch size input to 168 (weekly) 25.584
 
@@ -170,19 +169,20 @@ The initial baseline already returns a value of 24 MSE on the validation set, pl
 However, to a certain degree it is underfitting since the MSE is still quite high and there was no clear method to significantly lower that value.
 
 I picked model_4 as the winning model which returned a **final MSE 21.116** on the test set.
+
 Also, I was unable to unable to create forecasts outside of the given dataset and I have used the test set instead in this case.
 
 Below you'll find predicitons and observed values of the unseen test set for the winning model_4. Time steps equal to hours and point 0 on the test set was the 9th of July 2017.
 
-The graph below spans from the 9th of July 2017 to xyz of ta
+The graph below spans from the 9th of July 2017 to +1250 hours which is equivalent to the 30th Aug 2017.
 
 Image
 
 
-The final graph shows predictions and observed values across the entire test set which spands from 9th of July to 6th of May.
-Image
+The final graph shows predictions and observed values across the entire test set which spands from 9th of July to the end of the test set 6th May 2018.
 
-The model has to a certain degree picked up on all yearly, weekly and daily patterns.
+
+As you can see from the graphs above, the model has (to a certain degree) picked up on all yearly, weekly and daily patterns and it seems to do a slightly better job than their SARIMA and TBATS counterparts.
 
 
 

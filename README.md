@@ -54,7 +54,7 @@ Data Cleaning and EDA was performed simultaneously on both datasets in the data_
 
 Throughout the modelling, the main evaluation metric will be **Mean Squared Error** (MSE) which measures the average of the error squares between the predictions made by the model and the actual observations. 
 
-Our best model for traffic (TBATS) had a final MSE of 43.95 while our the best iteration of LSTM returned a final 21.116 MSE.
+Our best model for traffic (TBATS) had a final MSE of 43.95 while our the best iteration of LSTM returned a final 21.932 MSE.
 Both figures refer to our test set results.
 
 
@@ -118,7 +118,7 @@ After splitting into training and test sets, in the first section I analysed Aut
 I would have liked to play around with the the p and d parameters but the memory of my laptop constrained me to use values in between 0 and 1 for both. I had to run a dummy model with p=1 d=1 and q=1  with daily seasonality m=24 which returned an initial 127 for MSE. It picked up daily patterns perfectly as expected but any variations of traffic during the week was completely ignored.
 
 
-In the second iteration I basically replicated the same SARIMA model but changing the model seasoanlity to weekly m=53. I tried to reduce the number of datapoints just by looking at the last 6 months but still computation for anything above p and q more than 2 would take too long. MSE actually got worse in thsi case and the model stopped picking up any meaningful pattern.
+In the second iteration I basically replicated the same SARIMA model but changing the model seasoanlity to weekly m=53. I tried to reduce the number of datapoints just by looking at the last 6 months but still computation for anything above p and q more than 2 would take too long. MSE actually improved (MSE 89) probably due to the fact that we are using less data points but in this case the model stopped picking up any meaningful pattern.
 
 Unfortunately, any iteration of SARIMA would be unable to deal with multiple seasonalities at once and I had to resort to a different statistical package which is specifically designed to take multiple seasonalities into the modelling at once (TBATS). 
 
@@ -155,20 +155,20 @@ All of our LSTM models have a loss function MSE which they are trying to minimis
 
 The initial baseline already returns a value of 24 MSE on the validation set, please find below all the iterations and MSE changes:
 
-1) Baseline One Hidden Layer with 100 neurons: 24.650 MSE on Validation
+1) Baseline One Hidden Layer with 100 neurons: 24.075 MSE on Validation
 
-2) Increasing nodes to 120 on first hidden layer, adding another LSTM layer with 70 neurons, dropouts for overfit 26.394 MSE on Validation
+2) Increasing nodes to 120 on first hidden layer, adding another LSTM layer with 70 neurons, dropouts for overfit 25.180 MSE on Validation
 
-3) Changing Activation Function to 'relu' MSE 21.597 on Validation
+3) Changing Activation Function to 'relu' MSE 23.203 on Validation
 
-4) Increasing number of epochs from 10 to 20 20.464 on Validation 
+4) Increasing number of epochs from 10 to 20 21.194 on Validation 
 
-5) Changing batch size input to 168 (weekly) 25.584
+5) Changing batch size input to 168 (weekly) 24.795
 
 **It needs to be said that the model did not overfit as all validation results were very close to the training ones.**
 However, to a certain degree it is underfitting since the MSE is still quite high and there was no clear method to significantly lower that value.
 
-I picked model_4 as the winning model which returned a **final MSE 21.116** on the test set.
+I picked model_4 as the winning model which returned a **final MSE 21.932** on the test set.
 
 Also, I was unable to unable to create forecasts outside of the given dataset and I have used the test set instead in this case.
 
@@ -176,11 +176,16 @@ Below you'll find predicitons and observed values of the unseen test set for the
 
 The graph below spans from the 9th of July 2017 to +1250 hours which is equivalent to the 30th Aug 2017.
 
-Image
+<p align="center">
+  <img src="https://github.com/matteomm/sales-traffic-us-store/blob/master/figures/lstm_3weeks.png" width=750>
+</p>
 
 
 The final graph shows predictions and observed values across the entire test set which spands from 9th of July to the end of the test set 6th May 2018.
 
+<p align="center">
+  <img src="https://github.com/matteomm/sales-traffic-us-store/blob/master/figures/lstm_test_set.png" width=750>
+</p>
 
 As you can see from the graphs above, the model has (to a certain degree) picked up on all yearly, weekly and daily patterns and it seems to do a slightly better job than their SARIMA and TBATS counterparts.
 

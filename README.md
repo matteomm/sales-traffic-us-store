@@ -15,10 +15,10 @@ Contacts:
 1. [ File Descriptions ](#file_description)
 2. [ Technologies Used ](#technologies_used)
 3. [ Executive Summary ](#executive_summary)
-    * [ Data Cleaning and EDA ](#datacleaning)
-    * [ Modelling ](#modelling)
-    * [ Model Evaluation and Dashboard ](#insights)
- 4. [ Limitations and Future Work ](#futurework)
+4. [ Data Cleaning and EDA ](#datacleaning)
+ 5.[ Modelling ](#modelling)
+   
+
 
 
 <a name="file_description"></a>
@@ -113,7 +113,7 @@ q is the moving average part of the model which is used to set the error of the 
 
 m is the seasonality parameter which the model takes into account.
 
-In the first section I analysed Autocorrelation and Partial Autocorrelation plot and it seemed like there was a strong relationship with values lagged 24 hours and weekly.
+After splitting into training and test sets, in the first section I analysed Autocorrelation and Partial Autocorrelation plot and it seemed like there was a strong relationship with values lagged 24 hours and weekly.
 
 I would have liked to play around with the the p and d parameters but the memory of my laptop constrained me to use values in between 0 and 1 for both. I had to run a dummy model with p=1 d=1 and q=1  with daily seasonality m=24 which returned an initial 127 for MSE. It picked daily patterns perfectly as expected but any variations of traffic during the week was completely ignored.
 
@@ -131,6 +131,58 @@ It is true that we could have used exogenous variables to determine opening hour
 The final TBATS model however still had negative values for hours overnight and I decided to round negative values to 0. The final winning model has a 43 MSE on test set and I produced forecasts for the next month outside the dataset.
 
 Please find below predictions on the test set while forecast of additional month June 2018:
+
+<p align="center">
+  <img src="https://github.com/matteomm/sales-traffic-us-store/blob/master/figures/test_tbats.png" width=750>
+</p>
+
+
+<p align="center">
+  <img src="https://github.com/matteomm/sales-traffic-us-store/blob/master/figures/forecast_tbats.png" width=750>
+</p>
+
+### Sales LSTM
+
+Recurrent neural network (LSTM) is best suited for time-series and sequential problem. 
+This approach is the best if we have large data.
+
+The way I will frame this supervised learning problem is as predicting the value of sales at the current time (t) given the value of sales measurement and other features at the prior time steps (in this case 24 day cycle). Again, I tested lookback with only 24 as value but with more time and computational power, other look back windows could have been tested.
+
+Working with RNN and feeding data into them requires some additional steps. RNN sequential needs data that has the following shape (x,y,z) in which x is the number of samples, y the number of lookbacks in our case 24 and lastly the amount of variables we are taking into account which is just 1 (sales values) in our case.
+
+Normalizing the data is also a necessary step in order to increase performance and we have also split overall data into training, validation and test sets.
+
+All of our LSTM models have a loss function MSE which they are trying to minimise.
+
+The initial baseline already returns a value of 24 MSE on the validation set, please find below all the iterations and MSE changes:
+
+1) Baseline One Hidden Layer with 100 neurons: 24.650 MSE on Validation
+
+2) Increasing nodes to 120 on first hidden layer, adding another LSTM layer with 70 neurons, dropouts for overfit 26.394 MSE on Validation
+
+3) Changing Activation Function to 'relu' MSE 21.597 on Validation
+
+4) Increasing number of epochs from 10 to 20.464 on Validation 
+
+5) Changing batch size input to 168 (weekly) 25.584
+
+**It needs to be said that the model did not overfit as all validation results were very close to the training ones.**
+However, to a certain degree it is underfitting since the MSE is still quite high and there was no clear method to significantly lower that value.
+
+I picked model_4 as the winning model which returned a **final MSE 21.116** on the test set.
+Also, I was unable to unable to create forecasts outside of the given dataset and I have used the test set instead in this case.
+
+Below you'll find predicitons and observed values of the unseen test set for the winning model_4. Time steps equal to hours and point 0 on the test set was the 9th of July 2017.
+
+The graph below spans from the 9th of July 2017 to xyz of ta
+
+Image
+
+
+The final graph shows predictions and observed values across the entire test set which spands from 9th of July to 6th of May.
+Image
+
+The model has to a certain degree picked up on all yearly, weekly and daily patterns.
 
 
 

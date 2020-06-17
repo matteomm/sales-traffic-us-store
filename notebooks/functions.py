@@ -137,50 +137,6 @@ def mse_plot_pred (model, data_x, data_y, timesteps):
     print('MSE: %.3f' % rmse)
 
 
-# In[17]:
-
-
-# does exacytly the same of the above but plots the last time steps instead of the first ones
-import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
-import pandas as pd
-from joblib import dump, load
-scaler = load('scaler_training') 
-import numpy as np
-from sklearn.metrics import mean_squared_error
-def mse_plot_pred_inv (model, data_x, data_y, timesteps):
-    
-    # make a prediction
-    yhat = model.predict(data_x)
-    data_x = data_x.reshape((data_x.shape[0], 24))
-    # invert scaling for forecast
-    inv_yhat = np.concatenate((yhat, data_x[:, -23:]), axis=1)
-    inv_yhat = scaler.inverse_transform(inv_yhat)
-    inv_yhat = inv_yhat[:,0]
-    # invert scaling for actual
-    data_y = data_y.reshape((len(data_y), 1))
-    inv_y = np.concatenate((data_y, data_x[:, -23:]), axis=1)
-    inv_y = scaler.inverse_transform(inv_y)
-    inv_y = inv_y[:,0]
-    # calculate RMSE
-    
-
-    fig = plt.subplots(figsize=(20,10))
-    plt.title('Sales per hour', f)
-    aa=[x for x in range(timesteps)]
-    plt.plot(aa, inv_y[timesteps:], marker='.', label="actual")
-    plt.plot(aa, inv_yhat[timesteps:], 'r', label="prediction")
-    plt.ylabel('Sales', size=20)
-    plt.xlabel('Time step or Hours', size=20)
-    plt.xticks(fontsize=15)
-    plt.yticks(fontsize=15)
-    plt.legend(fontsize=15)
-    plt.show()
-    
-    rmse = (mean_squared_error(inv_y, inv_yhat))
-    print('MSE: %.3f' % rmse)
-
-
 # In[ ]:
 
 

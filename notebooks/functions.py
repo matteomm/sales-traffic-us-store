@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[5]:
+# In[6]:
 
 
 # this function plots rolling mean and standard deviations against originla dataset
@@ -9,6 +9,7 @@
 import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 import pandas as pd
+from statsmodels.tsa.stattools import adfuller
 def stationarity_check(TS):
     
    
@@ -40,7 +41,7 @@ def stationarity_check(TS):
     return None
 
 
-# In[6]:
+# In[7]:
 
 
 # this functions prepares series to be fed into an RNN.
@@ -72,7 +73,7 @@ def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
     return agg
 
 
-# In[7]:
+# In[8]:
 
 
 # plots the loss function graph based on mean squared error
@@ -90,7 +91,7 @@ def plot_loss(history):
     plt.show()
 
 
-# In[8]:
+# In[9]:
 
 
 # this function makes predictions with the trained RNN, 
@@ -133,6 +134,55 @@ def mse_plot_pred (model, data_x, data_y, timesteps):
     
     rmse = (mean_squared_error(inv_y, inv_yhat))
     print('MSE: %.3f' % rmse)
+
+
+# In[10]:
+
+
+# does exacytly the same of the above but plots the last time steps instead of the first ones
+import matplotlib.pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+import pandas as pd
+from joblib import dump, load
+scaler = load('scaler_training') 
+import numpy as np
+from sklearn.metrics import mean_squared_error
+def mse_plot_pred_inv (model, data_x, data_y, timesteps):
+    
+    # make a prediction
+    yhat = model.predict(data_x)
+    data_x = data_x.reshape((data_x.shape[0], 24))
+    # invert scaling for forecast
+    inv_yhat = np.concatenate((yhat, data_x[:, -23:]), axis=1)
+    inv_yhat = scaler.inverse_transform(inv_yhat)
+    inv_yhat = inv_yhat[:,0]
+    # invert scaling for actual
+    data_y = data_y.reshape((len(data_y), 1))
+    inv_y = np.concatenate((data_y, data_x[:, -23:]), axis=1)
+    inv_y = scaler.inverse_transform(inv_y)
+    inv_y = inv_y[:,0]
+    # calculate RMSE
+    
+
+    fig = plt.subplots(figsize=(20,10))
+    aa=[x for x in range(timesteps)]
+    plt.plot(aa, inv_y[timesteps:], marker='.', label="actual")
+    plt.plot(aa, inv_yhat[timesteps:], 'r', label="prediction")
+    plt.ylabel('Sales', size=20)
+    plt.xlabel('Time step', size=20)
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
+    plt.legend(fontsize=15)
+    plt.show()
+    
+    rmse = (mean_squared_error(inv_y, inv_yhat))
+    print('MSE: %.3f' % rmse)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:

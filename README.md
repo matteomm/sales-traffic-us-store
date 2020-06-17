@@ -7,7 +7,7 @@
 
 Contacts:
 * [Linkedin](https://www.linkedin.com/in/matteo-tortella-0a4274130/)
-* [e-mail] matteotortella4@gmail.com 
+   e-mail - matteotortella4@gmail.com 
 
 
 # Table of Contents

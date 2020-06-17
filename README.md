@@ -69,8 +69,28 @@ However, dates are still reported with a 15 min granularity and since the final 
 
 The second step is the merging and analysis of the federal US holidays with both datasets.
 
-The snapshot below tells us quite a bit of information on the average sale and amount of people at the shop broken down by hour, day of the week and months. Unsurprisingly, peak days and times are during the weekend around lunchtime. However, the increase in traffic does not translate into a significant increase in sales as you can see from the graph on the top right. 
+The snapshot below tells us quite a bit of information on the average sale and amount of people at the shop broken down by hour, day of the week and months. **Unsurprisingly, peak days and times are during the weekend around lunchtime. However, the increase in traffic does not translate into a significant increase in sales as you can see from the graph on the top right.** 
 
 This is an insight which would need further investigation and also led me to the conclusion that it is probably more appropriate to do modelling of the two variables separately instead of having traffic as an independent variable for sales.
 
 Also, there is a clear yearly/monthly seasonality shown the both graphs in the bottom:
+
+<p align="center">
+  <img src="https://github.com/matteomm/sales-traffic-us-store/blob/master/figures/eda_1.png" width=750>
+</p>
+
+
+Additionally, find below same breakdown (pivot of hours and days of the week) for all federal US holidays plus Saturdays and Sundays. Generally speaking, the shop is open every day of the week from 10 to 21 (only Sundays 19 instead) and also during all federal US holidays but Thanksgiving. **Also, it seems to be a very bad idea to be opened on Christmas Day as sales are  consistently lower than any other holiday with an average of 7 dollars an hour**.
+
+<p align="center">
+  <img src="https://github.com/matteomm/sales-traffic-us-store/blob/master/figures/eda_traffic.png" width=750>
+</p>
+
+<p align="center">
+  <img src="https://github.com/matteomm/sales-traffic-us-store/blob/master/figures/eda_sales.png" width=750>
+</p>
+
+
+
+
+

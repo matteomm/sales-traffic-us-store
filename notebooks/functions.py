@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
+# In[13]:
 
 
 # this function plots rolling mean and standard deviations against originla dataset
@@ -41,7 +41,7 @@ def stationarity_check(TS):
     return None
 
 
-# In[7]:
+# In[14]:
 
 
 # this functions prepares series to be fed into an RNN.
@@ -73,7 +73,7 @@ def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
     return agg
 
 
-# In[8]:
+# In[15]:
 
 
 # plots the loss function graph based on mean squared error
@@ -91,7 +91,7 @@ def plot_loss(history):
     plt.show()
 
 
-# In[9]:
+# In[16]:
 
 
 # this function makes predictions with the trained RNN, 
@@ -123,6 +123,7 @@ def mse_plot_pred (model, data_x, data_y, timesteps):
 
     fig = plt.subplots(figsize=(20,10))
     aa=[x for x in range(timesteps)]
+    plt.title('Sales per hour', fontsize= 20)
     plt.plot(aa, inv_y[:timesteps], marker='.', label="actual")
     plt.plot(aa, inv_yhat[:timesteps], 'r', label="prediction")
     plt.ylabel('Sales', size=20)
@@ -136,7 +137,7 @@ def mse_plot_pred (model, data_x, data_y, timesteps):
     print('MSE: %.3f' % rmse)
 
 
-# In[10]:
+# In[17]:
 
 
 # does exacytly the same of the above but plots the last time steps instead of the first ones
@@ -165,11 +166,12 @@ def mse_plot_pred_inv (model, data_x, data_y, timesteps):
     
 
     fig = plt.subplots(figsize=(20,10))
+    plt.title('Sales per hour', f)
     aa=[x for x in range(timesteps)]
     plt.plot(aa, inv_y[timesteps:], marker='.', label="actual")
     plt.plot(aa, inv_yhat[timesteps:], 'r', label="prediction")
     plt.ylabel('Sales', size=20)
-    plt.xlabel('Time step', size=20)
+    plt.xlabel('Time step or Hours', size=20)
     plt.xticks(fontsize=15)
     plt.yticks(fontsize=15)
     plt.legend(fontsize=15)
